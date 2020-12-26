@@ -6,61 +6,7 @@
 <li>단위 테스트-코드 주기(unit test-code cycle)</li>
 <li>리팩토링(refactoring)</li>
 </ul>
-<p align="center"><img alt="전체적인 TDD 프로세스" src="/Programming/TDD/Programming/TDD/2020-12-26-tdd/tdd_process.png"></p>
-
-<p>기능 테스트는 어플리케이션이 동작하는지 아닌지를 판단하기 위한 궁극의 수단이다. 반면 단위 테스트는 이 판단을 돕기 위한 툴이라 할 수 있다.</p>
-<p>이런식으로 TDD를 표현한 것을 ‘이중 반복 TDD(double-loop TDD)’라고 부르는 경우도 있다. <a target="_blank" rel="noopener" href="http://coding-is-like-cooking.info/2013/04/outside-in-development-with-double-loop-tdd/">이 주제에 관한 다른 관점의 기사</a>도 있다.</p>
-<p align="center"><img alt="기능 테스트와 단위 테스트로 구성되는 TDD 프로세스" src="/Programming/TDD/Programming/TDD/2020-12-26-tdd/func_n_unit_tdd.png"></p>
-
-<h2 id="클린코드를-위한-테스트-주도-개발-5장까지"><a href="#클린코드를-위한-테스트-주도-개발-5장까지" class="headerlink" title="클린코드를 위한 테스트 주도 개발 5장까지"></a>클린코드를 위한 테스트 주도 개발 5장까지</h2><p>지난 포스트부터 5장까지 정리.</p>
-<h3 id="기능테스트"><a href="#기능테스트" class="headerlink" title="기능테스트"></a>기능테스트</h3><p>기능: 페이지에서 작업 목록의 작성과 확인</p>
-<p>사용자 스토리</p>
-<ol>
-<li>에디스는 투두리스트 웹 어플이 나왔다는 소식을 듣고 확인하러 간다.</li>
-<li>웹 페이지 타이틀과 헤더라 To-Do를 표시하고 있다.</li>
-<li>에디스는 바로 작업을 추가하려고 한다.</li>
-<li>“공작깃털 사기”라고 텍스트 상자에 입력한다.</li>
-<li>엔터키를 치면 페이지가 갱신되고, 작업목록에 “1. 공작깃털 사기”가 추가된다.</li>
-<li>“공작깃털을 이용해서 그물 만들기”라고 입력한다.</li>
-<li>엔터키를 치면 페이지가 갱신되고, 작업목록에 “2. 공작깃털을 이용해서 그물 만들기”가 추가된다.</li>
-</ol>
-<p>selenium을 이용해 사용자 스토리 기능 테스트를 구현한다.</p>
-<ul>
-<li>unittest를 임포트하고 unittest.TestCase를 상속받은 클래스를 만든다.</li>
-<li>setUp(self), tearDown(self)를 오버라이드하여 셀레니움 웹 드라이버 열기와 닫기 처리를 한다.</li>
-<li>클래스 밖에 <code>if __name__ == &quot;__main__&quot;</code>에서 <code>uniitest.main(warnings=&quot;ignore&quot;)</code>로 기능 테스트가 실행 될 수 있도록 한다.</li>
-</ul>
-<h3 id="단위-테스트"><a href="#단위-테스트" class="headerlink" title="단위 테스트"></a>단위 테스트</h3><p>Django의 django.test에서 TestCase를 임포트한다. TestCase를 상속받은 클래스를 만들어 테스트를 진행 할 수 있다.</p>
-<p>홈페이지 테스트와 모델 테스트 클래스 두개에 7개 메서드를 이용해 테스트를 진행했다.</p>
-<ol>
-<li>홈페이지 테스트<ol>
-<li><code>test_root_url_resolve_to_home_page_view(self)</code></li>
-<li><code>test_home_page_returns_correct_html(self)</code></li>
-<li><code>test_home_page_only_saves_items_when_necessary(self)</code></li>
-<li><code>test_home_page_can_save_a_POST_request(self)</code></li>
-<li><code>test_home_page_redirects_after_POST(self):</code></li>
-<li><code>test_home_page_displays_all_list_items(self)</code></li>
-</ol>
-</li>
-<li>아이템 모델 테스트<ol>
-<li><code>test_saving_and_retrieving_items(self)</code></li>
-</ol>
-</li>
-</ol>
-<p>근데 뷰에 문제가 좀 있다.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render, redirect</span><br><span class="line"><span class="keyword">from</span> lists.models <span class="keyword">import</span> Item</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create your views here.</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">home_page</span>(<span class="params">request</span>):</span></span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&quot;POST&quot;</span>:</span><br><span class="line">        Item.objects.create(text=request.POST[<span class="string">&quot;item_text&quot;</span>])</span><br><span class="line">        <span class="keyword">return</span> redirect(<span class="string">&quot;/&quot;</span>)</span><br><span class="line"></span><br><span class="line">    items = Item.objects.<span class="built_in">all</span>()</span><br><span class="line">    <span class="keyword">return</span> render(request, <span class="string">&quot;home.html&quot;</span>, &#123;<span class="string">&quot;items&quot;</span>: items&#125;)</span><br></pre></td></tr></table></figure>
-
-<p><code>request.POST</code>는 딕셔너리인데, 없는 키의 값을 가져오려고 하면 빈 값을 가져온다. 책 중간에는 <code>request.POST.get(&#39;item_text&#39;, &#39;&#39;)</code>으로 잘 사용하다가 나중에 위와같이 바꼈다. 빈 값을 가져오면 Item을 만들지 못하게 해야되는데 왜 저렇게 한건지 모르겠다. 여튼 저렇게 하면 빈 값도 생성되기 때문에 안된다.</p>
-<h3 id="csrf"><a href="#csrf" class="headerlink" title="csrf"></a>csrf</h3><p><code>test_home_page_returns_correct_html(self)</code> 단위 테스트를 만들며 csrf 문제로 고생을 좀 했다.</p>
-<p><a target="_blank" rel="noopener" href="https://ko.wikipedia.org/wiki/%EC%82%AC%EC%9D%B4%ED%8A%B8_%EA%B0%84_%EC%9A%94%EC%B2%AD_%EC%9C%84%EC%A1%B0">csrf란</a> 웹사이트 취약점 공격의 하나로, 사용자가 자신의 의지와는 무관하게 공격자가 의도한 행위를 특정 웹사이트에 요청하게 하는 공격을 말한다.</p>
-<p>django는 템플릿에 <code>&#123;&#123; csrf_token &#125;&#125;</code>만 입력하여 간단히 처리할수 있다. 하지만 웹사이트에서 보여주는 html과 템플릿을 비교하는 테스트에서 문제가 발생했다.</p>
-<p><code>&#123;&#123; csrf_token &#125;&#125;</code>은 form의 <code>&lt;input type=&#39;hidden&#39;&gt;</code>으로 난수를 생성하는데, csrf가 html에 포함되어 계속 assertEqual을 통과하지 못했다.</p>
-<p>어떻게 검색하다보니 같은 문제를 겪고있는 동지들이 해결방법을 잘 알려주었다. 그냥 csrf를 html에서 빼면 되었고, 친절하게 csrf 제거 코드까지 만들어놨다.</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">remove_csrf_tag</span>(<span class="params">text</span>):</span></span><br><span class="line">    <span class="keyword">return</span> re.sub(<span class="string">r&#x27;&lt;[^&gt;]*csrfmiddlewaretoken[^&gt;]*&gt;&#x27;</span>, <span class="string">&#x27;&#x27;</span>, text)</span><br></pre></td></tr></table></figure>
-
-<p>참고 블로그들</p>
-<p><a target="_blank" rel="noopener" href="https://ugaemi.github.io/tdd/TDD-csrf-token/">감사합니다</a>, <a target="_blank" rel="noopener" href="https://seon54.github.io/python/2019/12/31/python-django-tdd-03/">충성충성^^7</a></p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-12-22T12:23:05.000Z" title="2020-12-22T12:23:05.000Z">2020-12-22</time>&nbsp;게시 됨</span><span class="level-item"><a class="link-muted" href="/categories/Programming/">Programming</a><span> / </span><a class="link-muted" href="/categories/Programming/Django/">Django</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Programming/Django/Programming/Django/2020-12-22-vscode-django/">VSCode에서 Django lint가 적용되지 않을때</a></h1><div class="content"><p>django의 모듈을 vscode가 제대로 인식하지 못해서 자꾸 빨간줄이 그어져 거슬렸다. 찾아보니 settings.json의 파이썬 포매팅, linting을 수정하면 된다.</p>
+<p align="center"><img alt="전체적인 TDD 프로세스" src="/Programming/TDD/Programming/TDD/2020-12-26-tdd/tdd_process.png"></p></div><a class="article-more button is-small is-size-7" href="/Programming/TDD/Programming/TDD/2020-12-26-tdd/#more">자세히 보기</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-12-22T12:23:05.000Z" title="2020-12-22T12:23:05.000Z">2020-12-22</time>&nbsp;게시 됨</span><span class="level-item"><a class="link-muted" href="/categories/Programming/">Programming</a><span> / </span><a class="link-muted" href="/categories/Programming/Django/">Django</a></span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/Programming/Django/Programming/Django/2020-12-22-vscode-django/">VSCode에서 Django lint가 적용되지 않을때</a></h1><div class="content"><p>django의 모듈을 vscode가 제대로 인식하지 못해서 자꾸 빨간줄이 그어져 거슬렸다. 찾아보니 settings.json의 파이썬 포매팅, linting을 수정하면 된다.</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;python.linting.pylintArgs&quot;: [</span><br><span class="line">    &quot;--load-plugins&quot;,</span><br><span class="line">    <span class="string">&quot;pylint_django&quot;</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 
 <p>이거만 추가해주자.</p>
