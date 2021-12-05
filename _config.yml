@@ -23,7 +23,7 @@ email: nightwing@naver.com
 description: >- # this means to ignore newlines until "baseurl:"
   description...
 domail: nomore12.github.io
-baseurl: /nomore12.github.io/ # the subpath of your site, e.g. /blog
+baseurl: / # the subpath of your site, e.g. /blog
 url: https://nomore12.github.io # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 github_username:  nomore12
