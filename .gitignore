@@ -1,4 +1,4 @@
-_site
+# _site
 .sass-cache
 .jekyll-cache
 .jekyll-metadata
@@ -9,7 +9,7 @@ _site
 # Edit at https://www.toptal.com/developers/gitignore?templates=ruby,jekyll,node,sass
 
 ### Jekyll ###
-_site/
+# _site/
 .sass-cache/
 .jekyll-cache/
 .jekyll-metadata
