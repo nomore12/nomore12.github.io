@@ -1,0 +1,15 @@
+# Sample Authors
+# Remove file or replace with your own
+
+노성호:
+  name: 노성호
+  picture: /images/bio-photo-2.jpg
+  links:
+    - title: blog
+      url: https://nomore12.github.com
+      icon: fab fa-twitter-square
+
+# Cornelius Fiddlebone:
+#   name: Cornelius Fiddlebone
+#   picture: /images/bio-photo.jpg
+#   twitter: corneliusfiddlebone
